@@ -10,7 +10,7 @@ class MusicSearcher:
         'Accept': 'text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01',
         #'Origin': 'http://music.zhuolin.wang',
         'X-Requested-With': 'XMLHttpRequest',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36',
+        #'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36',
         #'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
         #'Referer': 'http://music.zhuolin.wang/',
         'Accept-Encoding': 'gzip, deflate',
@@ -32,7 +32,12 @@ class MusicSearcher:
             'name': keyword
         }
         response = requests.post(self.URL,data = data,headers = self.headers,cookies = self.cookie)
-        return toJsonStr(response.content.decode('unicode_escape'))
+        str1 = str(response.content.decode('unicode_escape'))
+        index1 = str1.find('(')
+        index2 = str1.rfind(')')
+        str1 = '{\"music\":' + str1[index1+1:index2] + '}'
+        result = json.loads(str1)
+        return result
     def getMusicByID(self,musicID):
         data = {
             'types':'url',
@@ -45,6 +50,11 @@ class MusicSearcher:
         resultjson = toJsonStr(resulttext)
         resultjson['url'] = handleURL(resultjson['url'])
         return resultjson['url']
+    def getMusicHEXbyURL(self, musicurl):
+        response = requests.get(musicurl)
+        if (response.status_code != 200):
+            print('ERROR:can not get music by url')
+        return response.content
     
 
 def handleURL(origin_url):
