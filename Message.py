@@ -85,20 +85,20 @@ class Messager():
             return resultmessageList
         else:
             return False
-        def readAMessageByTargetName(self,target):
-            if not target in self.__mesageheadlist:
-                return False
-            if target in self.__mesageheadlist[self.tail_:self.head_]:
-                index = self.tail_ - 1
-                while index+1 < self.head_:
-                    if not target in self.__mesageheadlist[index+1:self.head_]:
-                        break
-                    index = self.__mesageheadlist.index(target,index+1,self.head_)
-                    if self.__mesagelist[index]['isUsed'] == False:
-                        break   
-                return self.__mesagelist[index]
-            else:
-                return False 
+    def readAMessageByTargetName(self,target):
+        if not target in self.__mesageheadlist:
+            return False
+        if target in self.__mesageheadlist[self.tail_:self.head_]:
+            index = self.tail_ - 1
+            while index+1 < self.head_:
+                if not target in self.__mesageheadlist[index+1:self.head_]:
+                    break
+                index = self.__mesageheadlist.index(target,index+1,self.head_)
+                if self.__mesagelist[index]['isUsed'] == False:
+                    break   
+            return self.__mesagelist[index]
+        else:
+            return False
     def __popMessage(self,index):
         
         return
