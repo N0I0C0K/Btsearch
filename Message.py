@@ -33,6 +33,6 @@ class Messager():
     def isinLine(self,target):
         if not target in self.__mesageheadlist:
             return False
-        if target in self.__mesageheadlist[self.tail_:self.head_]
+        #if target in self.__mesageheadlist[self.tail_:self.head_]
 
 messager = Messager()
