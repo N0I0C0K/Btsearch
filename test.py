@@ -2,6 +2,9 @@ import requests
 import json
 #import unicodedata
 import string
+import pyaudio
+import wave
+import os
 
 URL = 'http://music.zhuolin.wang/api.php?callback=jQuery111303909958994421281_1564923774351 '
 
@@ -36,24 +39,44 @@ def main():
         'id':'448749148',
         'source':'netease'
     }
-    response = requests.post(URL,data = data,headers = headers,cookies = cookie)
+    response = requests.post(URL,data = data1,headers = headers,cookies = cookie)
     #str1 = bytes(response.text,'GBK')
     #str2 = str(response.text,encoding = 'ascii')
     print(response.content)
-    str2 = response.content.decode('unicode_escape')
-    js1 = toJsonStr2(str2)
+    str2 = response.content.decode('utf-8')
+    #js1 = toJsonStr2(str2)
     #str2 = str(response.text)
-    '''js1 = toJsonStr(str2)
+    js1 = toJsonStr(str2)
     js1['url'] = handleURL(js1['url'])
     music_response = requests.get(js1['url'])
     if (music_response.status_code != 200):
         print('ERROR')
         return
-    with open('music.wav','wb') as playfile:
+    filename = 'music'
+    with open(filename+'.mp3','wb') as playfile:
         for chunk in music_response.iter_content(1024):
             playfile.write(chunk)
-    return '''
-    return
+            #stream.write(chunk)
+    os.system(('ffmpeg -i '+filename + '.mp3' + ' ' + 'out_'+filename+'.wav'))
+    fb = wave.open(r'out_music.wav','rb') 
+    p = pyaudio.PyAudio()
+    format_ = p.get_format_from_width(fb.getsampwidth())
+    channels = fb.getnchannels()
+    rate = fb.getframerate()
+    #a1 = fb.getnframes()
+    stream = p.open(format = format_,channels = channels,rate = rate,output = True)
+    chunk = 1024
+    while  True:
+        date = fb.readframes(chunk)
+        if date == '':
+            break
+        stream.write(date)
+    stream.stop_stream()
+    stream.close()
+    p.terminate()
+    fb.close()
+    return 
+    #return
 
 def handleURL(origin_url):
     str1 = str(origin_url).strip('/')

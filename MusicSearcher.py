@@ -1,8 +1,12 @@
 import json
 import requests
+import os
+import wave
+import pyaudio
 
 class MusicSearcher:
     URL =  'http://music.zhuolin.wang/api.php?callback=jQuery111303909958994421281_1564923774351 '
+    
     headers = {
         #'Host': 'music.zhuolin.wang',
         #'Connection': 'keep-alive',
@@ -50,12 +54,31 @@ class MusicSearcher:
         resultjson = toJsonStr(resulttext)
         resultjson['url'] = handleURL(resultjson['url'])
         return resultjson['url']
-    def getMusicHEXbyURL(self, musicurl):
+    def playMusicHEXbyURL(self, musicurl):
         response = requests.get(musicurl)
+        filename = 'temp'
         if (response.status_code != 200):
             print('ERROR:can not get music by url')
-        return response.content
-    
+        with open(filename + '.mp3','wb') as tempfile:
+            for chunk in response.iter_content(1024):
+                tempfile.write(chunk)
+        if (os.path.exists('ffmpeg.exe') != True):
+            print('ERROR:can not exchange to wav | can not find ffmpeg.exe')
+            return False
+        os.system(('ffmpeg -i '+filename + '.mp3' + ' ' + 'out_'+filename+'.wav'))
+        with wave.open('out_'+filename+'.wav','rb') as fb:
+            p = pyaudio.PyAudio()
+            stream = p.open(formate = p.get_format_from_width(fb.getsampwidth()),channels = fb.getnchannels(),rate = fb.getframerate(),output = True)
+            chunk = 1024
+            while True:
+                date = fb.readframes(chunk)
+                if date == '':
+                    break
+                stream.write(date)
+        stream.stop_stream()
+        stream.close()
+        p.terminate()
+        return True      
 
 def handleURL(origin_url):
     str1 = str(origin_url).strip('/')
