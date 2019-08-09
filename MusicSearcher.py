@@ -54,7 +54,7 @@ class MusicSearcher:
         resultjson = toJsonStr(resulttext)
         resultjson['url'] = handleURL(resultjson['url'])
         return resultjson['url']
-    def playMusicHEXbyURL(self, musicurl):
+    def __playMusicHEXbyURL(self, musicurl):
         response = requests.get(musicurl)
         filename = 'temp'
         if (response.status_code != 200):
