@@ -30,9 +30,45 @@ class Messager():
         self.__mesageheadlist.append(message['target'])
         self.head_ += 1
         return
-    def isinLine(self,target):
+    def getAllMessagebyTargetName(self,target):
         if not target in self.__mesageheadlist:
             return False
-        #if target in self.__mesageheadlist[self.tail_:self.head_]
-
+        if target in self.__mesageheadlist[self.tail_:self.head_]:
+            indexlist = []
+            index = self.tail_-1
+            while index+1 < self.head_:
+                if not target in self.__mesageheadlist[index+1:self.head_]:
+                    break
+                index = self.__mesageheadlist.index(target,index+1,self.head_)
+                if self.__mesagelist[index]['isUsed'] == True:
+                    continue
+                indexlist.insert(-1,index)
+            resultmessageList = []
+            for i in indexlist:
+                self.__mesagelist[i]['isUsed'] = True
+                resultmessageList.insert(-1,self.__mesagelist[i])        
+            #self.__mesagelist[index]['isUsed'] = True
+            return resultmessageList
+        else:
+            return False
+    
+    def getAMessageByTargetName(self,target):
+        if not target in self.__mesageheadlist:
+            return False
+        if target in self.__mesageheadlist[self.tail_:self.head_]:
+            index = self.tail_ - 1
+            while index+1 < self.head_:
+                if not target in self.__mesageheadlist[index+1:self.head_]:
+                    break
+                index = self.__mesageheadlist.index(target,index+1,self.head_)
+                if self.__mesagelist[index]['isUsed'] == False:
+                    break   
+            self.__mesagelist[index]['isUsed'] = True
+            return self.__mesagelist[index]
+        else:
+            return False
+        return
+    def __popMessage(self,index):
+        
+        return
 messager = Messager()
