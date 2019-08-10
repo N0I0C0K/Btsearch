@@ -3,6 +3,8 @@ import requests
 import os
 import wave
 import pyaudio
+from Message import messager
+from Message import Message
 
 class MusicSearcher:
     URL =  'http://music.zhuolin.wang/api.php?callback=jQuery111303909958994421281_1564923774351 '

@@ -7,7 +7,7 @@ class MessageERROR(Exception):
     def __repr__(self):
         return str(self.value)
 
-class MessageEnum(Enum):
+class Message(Enum):
     PLAYMUSIC = 1
     STOPMUSIC = 2
 
@@ -32,7 +32,7 @@ class Messager():
         return
     def getAllMessagebyTargetName(self,target):
         if not target in self.__mesageheadlist:
-            return False
+            return None
         if target in self.__mesageheadlist[self.tail_:self.head_]:
             indexlist = []
             index = self.tail_-1
@@ -50,25 +50,32 @@ class Messager():
             #self.__mesagelist[index]['isUsed'] = True
             return resultmessageList
         else:
-            return False 
-    def getAMessageByTargetName(self,target):
+            return None 
+    def getNewMessageByTargetName(self,target):
         if not target in self.__mesageheadlist:
-            return False
+            return None
         if target in self.__mesageheadlist[self.tail_:self.head_]:
             index = self.tail_ - 1
+            pre_index = index
             while index+1 < self.head_:
+                pre_index = index
                 if not target in self.__mesageheadlist[index+1:self.head_]:
                     break
+                #index = self.__mesageheadlist.copy()
+                
                 index = self.__mesageheadlist.index(target,index+1,self.head_)
-                if self.__mesagelist[index]['isUsed'] == False:
-                    break   
+                if self.__mesagelist[index]['isUsed'] == True:
+                    index = pre_index
+                    break
+            if self.__mesagelist[index]['isUsed'] == True:
+                return None   
             self.__mesagelist[index]['isUsed'] = True
             return self.__mesagelist[index]
         else:
-            return False
+            return None
     def readAllMessagebyTargetName(self,target):
         if not target in self.__mesageheadlist:
-            return False
+            return None
         if target in self.__mesageheadlist[self.tail_:self.head_]:
             indexlist = []
             index = self.tail_-1
@@ -78,27 +85,33 @@ class Messager():
                 index = self.__mesageheadlist.index(target,index+1,self.head_)
                 if self.__mesagelist[index]['isUsed'] == True:
                     continue
-                indexlist.insert(-1,index)
+                indexlist.append(index)
             resultmessageList = []
             for i in indexlist:
-                resultmessageList.insert(-1,self.__mesagelist[i])        
-            return resultmessageList
+                resultmessageList.append(self.__mesagelist[i])        
+            return resultmessageList.reverse()
         else:
-            return False
-    def readAMessageByTargetName(self,target):
+            return None
+    def readNewMessageByTargetName(self,target):
         if not target in self.__mesageheadlist:
-            return False
+            return None
         if target in self.__mesageheadlist[self.tail_:self.head_]:
             index = self.tail_ - 1
+            pre_index = index
             while index+1 < self.head_:
+                pre_index = index
                 if not target in self.__mesageheadlist[index+1:self.head_]:
                     break
                 index = self.__mesageheadlist.index(target,index+1,self.head_)
-                if self.__mesagelist[index]['isUsed'] == False:
-                    break   
+                if self.__mesagelist[index]['isUsed'] == True:
+                    index = pre_index
+                    break
+            if self.__mesagelist[index]['isUsed'] == True:
+                return None   
+            self.__mesagelist[index]['isUsed'] = True
             return self.__mesagelist[index]
         else:
-            return False
+            return None
     def __popMessage(self,index):
         
         return
