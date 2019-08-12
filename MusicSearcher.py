@@ -10,15 +10,8 @@ class MusicSearcher:
     URL =  'http://music.zhuolin.wang/api.php?callback=jQuery111303909958994421281_1564923774351 '
     
     headers = {
-        #'Host': 'music.zhuolin.wang',
-        #'Connection': 'keep-alive',
-        #'Content-Length': '54',
         'Accept': 'text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01',
-        #'Origin': 'http://music.zhuolin.wang',
         'X-Requested-With': 'XMLHttpRequest',
-        #'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36',
-        #'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        #'Referer': 'http://music.zhuolin.wang/',
         'Accept-Encoding': 'gzip, deflate',
         'Accept-Language': 'zh-CN,zh;q=0.9'
     }
@@ -72,11 +65,20 @@ class MusicSearcher:
             p = pyaudio.PyAudio()
             stream = p.open(formate = p.get_format_from_width(fb.getsampwidth()),channels = fb.getnchannels(),rate = fb.getframerate(),output = True)
             chunk = 1024
+            isStop = False
             while True:
-                date = fb.readframes(chunk)
-                if date == '':
-                    break
-                stream.write(date)
+                if isStop == False:
+                    date = fb.readframes(chunk)
+                    if date == '':
+                        break
+                    stream.write(date)
+                if messager.getNewMessageByTargetName(Message.STOPMUSIC) != None:
+                    isStop = True
+                if isStop & stream.is_stopped():
+                    continue
+                elif isStop & stream.is_stopped() == False:
+                    stream.stop_stream()
+                    continue         
         stream.stop_stream()
         stream.close()
         p.terminate()
